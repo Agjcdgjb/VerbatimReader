@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逐字閱讀器</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.88/dist/epub.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script>
+        // 檢查必要的函式庫是否正確載入
+        window.addEventListener('load', function() {
+            const libraries = {
+                'JSZip': typeof JSZip !== 'undefined',
+                'ePub': typeof ePub !== 'undefined',
+                'pdfjsLib': typeof pdfjsLib !== 'undefined',
+                'mammoth': typeof mammoth !== 'undefined'
+            };
+
+            let missingLibraries = [];
+            for (const [lib, loaded] of Object.entries(libraries)) {
+                if (!loaded) {
+                    missingLibraries.push(lib);
+                }
+            }
+
+            if (missingLibraries.length > 0) {
+                console.error('以下函式庫未正確載入:', missingLibraries.join(', '));
+                alert('部分必要函式庫載入失敗，請重新整理頁面');
+            } else {
+                console.log('所有必要函式庫已正確載入');
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="library-container">
+        <header class="library-header">
+            <h1><i class="fas fa-book-reader"></i> 逐字閱讀器</h1>
+            <p class="subtitle">讓閱讀更專注，更有效率</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="book-shelf">
+                <div class="shelf-top"></div>
+                <div class="reader-container">
+                    <div id="textDisplay" class="text-display"></div>
+                    <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>正在載入檔案...</p>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span class="progress-percentage" id="progressPercentage">0%</span>
+                    </div>
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-fill" id="progressFill"></div>
+                        <div class="progress-handle" id="progressHandle"></div>
+                    </div>
+                </div>
+                <div class="shelf-bottom"></div>
+            </div>
+
+            <div class="controls-panel">
+                <div class="book-selector">
+                    <label for="bookFile" class="file-label">
+                        <i class="fas fa-folder-open"></i> 選擇書籍
+                        <input type="file" id="bookFile" accept=".txt,.pdf,.epub,.docx,.html">
+                    </label>
+                    <p class="file-info">支援的檔案格式：TXT、PDF、EPUB、DOCX、HTML（最大 10MB）</p>
+                </div>
+
+                <div class="reading-controls">
+                    <div class="control-group">
+                        <button id="startBtn" class="control-btn">
+                            <i class="fas fa-play"></i> 開始閱讀
+                        </button>
+                        <button id="pauseBtn" class="control-btn">
+                            <i class="fas fa-pause"></i> 暫停
+                        </button>
+                        <button id="stopBtn" class="control-btn">
+                            <i class="fas fa-stop"></i> 停止
+                        </button>
+                    </div>
+
+                    <div class="speed-control">
+                        <label for="speed">
+                            <i class="fas fa-tachometer-alt"></i> 閱讀速度
+                        </label>
+                        <div class="speed-input-group">
+                            <input type="range" id="speed" min="100" max="1000" value="300">
+                            <span id="speedValue">300</span> 字/分鐘
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="library-footer">
+            <p>© 2024 逐字閱讀器 | 讓閱讀成為一種享受</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
